@@ -45,15 +45,15 @@ resource "aws_instance" "mount-fuji" {
                 sudo yum install httpd -y
                 sudo yum install git -y
                 rm /etc/httpd/conf.d/welcome.conf
-#                cp mount-fuji.conf /etc/httpd/conf.d
-#                cat mount-fuji.conf > /etc/httpd/conf.d/mount-fuji.conf
                 local_ip==$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
                 echo "$local_ip        mount-fuji"   >> /etc/hosts
                 mkdir /var/www/mount-fuji
                 cd /var/www/mount-fuji
                 git clone https://yogibear-sr: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@github.com/yogibear-sr/sre-fuji-pingcloud.git
                 git clone https://yogibear-sr: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@github.com/yogibear-sr/fuji-app-python_module.git
+                git clone https://yogibear-sr:ghp_wZw/6pirr4DSnAFASMsVokT7cvguDZd4AkhX4@github.com/yogibear-sr/sre-mt-fuji-misc.git
                 echo -e "User-agent: *\nDisallow: /" > /var/www/mount-fuji/robots.txt
+                cp /var/www/mount-fuji/sre-mt-fuji-misc/mount-fuji.conf /etc/httpd/conf.d
                 chown -R apache:apache /var/www/mount-fuji
                 sudo systemctl start httpd
                 sudo systemctl enable httpd

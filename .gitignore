@@ -1,3 +1,4 @@
-.terra*
+.*
+!.gitignore
 terraform.tfstate
 terraform.tfstate.backup
