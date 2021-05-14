@@ -45,7 +45,7 @@ resource "aws_instance" "mount-fuji" {
                 sudo yum install httpd -y
                 sudo yum install git -y
                 rm /etc/httpd/conf.d/welcome.conf
-                local_ip==$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
+                local_ip=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
                 echo "$local_ip        mount-fuji"   >> /etc/hosts
                 mkdir /var/www/mount-fuji
                 cd /var/www/mount-fuji
@@ -116,13 +116,19 @@ resource "aws_elb" "mount-fuji-elb" {
   }
 }
 
-#resource "aws_route53_record" "mount-fuji-sr" {
-#  zone_id = aws_route53_zone.awscloud.pingidentity.net.zone_id
-#  name    = "mount-fuji-sr"
-#  type    = "CNAME"
-#  ttl     = "60"
-#  records = [aws_lb.mount-fuji-elb.dns_name]
-#}
+data "aws_elb_hosted_zone_id" "main" {}
+
+resource "aws_route53_record" "srehan-httpd" {
+  zone_id = "Z06224173B7VHTT03FQWR"
+  name    = "srehan-httpd"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.mount-fuji-elb.dns_name}"
+    zone_id                = "${aws_elb.mount-fuji-elb.zone_id}"
+    evaluate_target_health = true
+  }
+}
 
 output "elb-dns" {
    value = "${aws_elb.mount-fuji-elb.dns_name}"
@@ -141,3 +147,4 @@ output "mount-fuji_ip_public" {
 output "mount-fuji_name" {
     value = [aws_instance.mount-fuji.*.tags.Name]
 }
+
