@@ -1,0 +1,12 @@
+srehan.awscloud.pingidentity.net	A
+dualstack.mount-fuji-elb-2086459647.us-east-2.elb.amazonaws.com
+
+
+resource "aws_route53_record" "mount-fuji-sr" {
+  zone_id = aws_route53_zone.awscloud.pingidentity.net.zone_id
+  name    = "mount-fuji-sr"
+  type    = "CNAME"
+  ttl     = "60"
+  records = [aws_lb.mount-fuji-elb.dns_name]
+}
+
