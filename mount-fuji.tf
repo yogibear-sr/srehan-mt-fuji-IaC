@@ -33,7 +33,7 @@ resource "aws_security_group" "mount-fuji-ssh-http" {
   }
 }
 
-# create EC2 instance on default subnet
+# create EC2 instance on default subnet and do some post build tasks
 resource "aws_instance" "mount-fuji" {
   ami               = "ami-077e31c4939f6a2f3"
   instance_type     = "t2.micro"
@@ -54,6 +54,7 @@ resource "aws_instance" "mount-fuji" {
                 git clone https://yogibear-sr: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@github.com/yogibear-sr/sre-mt-fuji-misc.git
                 echo -e "User-agent: *\nDisallow: /" > /var/www/mount-fuji/robots.txt
                 cp /var/www/mount-fuji/sre-mt-fuji-misc/mount-fuji.conf /etc/httpd/conf.d
+                sed -i 's/README\*//g'  /etc/httpd/conf.d/autoindex.conf
                 chown -R apache:apache /var/www/mount-fuji
                 sudo systemctl start httpd
                 sudo systemctl enable httpd
@@ -116,8 +117,7 @@ resource "aws_elb" "mount-fuji-elb" {
   }
 }
 
-data "aws_elb_hosted_zone_id" "main" {}
-
+# create web server DNS record pointing to load balancer
 resource "aws_route53_record" "srehan-httpd" {
   zone_id = "Z06224173B7VHTT03FQWR"
   name    = "srehan-httpd"
@@ -128,6 +128,10 @@ resource "aws_route53_record" "srehan-httpd" {
     zone_id                = "${aws_elb.mount-fuji-elb.zone_id}"
     evaluate_target_health = true
   }
+}
+
+output "alias_name" {
+  value = tolist(aws_route53_record.srehan-httpd.alias.*.name)[0]
 }
 
 output "elb-dns" {
