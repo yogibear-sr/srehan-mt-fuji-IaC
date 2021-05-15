@@ -15,6 +15,13 @@ resource "aws_security_group" "mount-fuji-ssh-http" {
     description = "Allow ssh access from Subhash IP only"
   }
 
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["172.31.0.0/16"]
+    description = "Allow ssh access from Subhash IP only"
+  }
 
   ingress {
     from_port   = 80
@@ -42,20 +49,29 @@ resource "aws_instance" "mount-fuji" {
   key_name = "mount-fuji"
   user_data = <<-EOF
                 #! /bin/bash
+                # install apache2 server and git cli
                 sudo yum install httpd -y
                 sudo yum install git -y
+                #
+                # web server setup
                 rm /etc/httpd/conf.d/welcome.conf
                 local_ip=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
                 echo "$local_ip        mount-fuji"   >> /etc/hosts
-                mkdir /var/www/mount-fuji
-                cd /var/www/mount-fuji
-                git clone https://yogibear-sr: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@github.com/yogibear-sr/sre-fuji-pingcloud.git
-                git clone https://yogibear-sr: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@github.com/yogibear-sr/fuji-app-python_module.git
-                git clone https://yogibear-sr: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@github.com/yogibear-sr/sre-mt-fuji-misc.git
+                html_folder="/var/www/mount-fuji"
+                [[ ! -e $html_folder ]] && mkdir $html_folder
+                # create archives of git repo's
+                cd $html_folder
+                for REPO in sre-fuji-pingcloud fuji-app-python_module sre-mt-fuji-misc
+                    do
+                         git clone https://yogibear-sr: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@github.com/yogibear-sr/$REPO.git
+                         (cd $REPO/ ; git archive main --format=tgz --output=../$REPO.tgz)
+                         [[ -e $REPO ]] && rm -rf $REPO
+                    done
                 echo -e "User-agent: *\nDisallow: /" > /var/www/mount-fuji/robots.txt
                 cp /var/www/mount-fuji/sre-mt-fuji-misc/mount-fuji.conf /etc/httpd/conf.d
                 sed -i 's/README\*//g'  /etc/httpd/conf.d/autoindex.conf
-                chown -R apache:apache /var/www/mount-fuji
+                chown -R apache:apache $html_folder
+                # enable from boot and start web service
                 sudo systemctl start httpd
                 sudo systemctl enable httpd
   EOF
@@ -66,7 +82,9 @@ resource "aws_instance" "mount-fuji" {
   }
 
 }
+
 # set load balancer security group along with access rules
+
 resource "aws_security_group" "mount-fuji-elbsg" {
   name        = "mount-fuji-elbsg"
   description = "allow http traffic"
@@ -89,7 +107,9 @@ resource "aws_security_group" "mount-fuji-elbsg" {
   }
 }
 
+
 # create simple classic load balancer
+
 resource "aws_elb" "mount-fuji-elb" {
   name               = "mount-fuji-elb"
   availability_zones = ["us-east-2a"]
@@ -118,6 +138,7 @@ resource "aws_elb" "mount-fuji-elb" {
 }
 
 # create web server DNS record pointing to load balancer
+
 resource "aws_route53_record" "srehan-httpd" {
   zone_id = "Z06224173B7VHTT03FQWR"
   name    = "srehan-httpd"
