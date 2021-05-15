@@ -1,6 +1,6 @@
 # IaC related files are in this folder
 
-##Main file is mount-fuji.tf - this builds an EC2 instance , load balancer and assign a front end web address to the instance. The security groups are quite strict to access to the web service is limited.
+## Main file is mount-fuji.tf - this builds an EC2 instance , load balancer and assign a front end web address to the instance. The security groups are quite strict to access to the web service is limited.
 
 ### Pre-reqs
 1) install terraform on your computer
