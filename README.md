@@ -36,7 +36,7 @@ After the interval you should see the three repositories setup to do the three e
 
 If you want you can ssh to the ec2 instance using the external IP from the output as follows
 
-ssh -i mount-fuji.pem ecv2-user@<external IP>
+ssh -i mount-fuji.pem ec2-user@[external IP]
 
 ##  Removing all the components
 
