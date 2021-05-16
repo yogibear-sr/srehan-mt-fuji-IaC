@@ -12,7 +12,13 @@
 7) save the mount-fuji.tf file and exit
 
 ### Building the instance
-First check the validity of the terraform files as follows
+
+After downloading the code from git , initialise terraform as follows (to download the plugins and providers)
+
+terraform init
+
+Next check validity of the terraform file(s) , mount-fuji.tf as follows
+
 terraform validate
 
 If this comes back clean you can continue
@@ -27,7 +33,7 @@ The build will output some details like web address, internal/external IP's and 
 
 There is no https certificate installed but this can be added if required
 
-Once build is complete, an number of outputs are given for information purposes ,  goto a web browser and using the DNS record name added type
+Once build is complete, an number of outputs are given for information purposes ,  goto a web browser and using the DNS record name (https://srehan-httpd.ping.fuji.com:443) added type
 
 http://<DNS RECORD>.ping.fuji.com:443/
 
