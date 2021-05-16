@@ -37,7 +37,7 @@ Once build is complete, an number of outputs are given for information purposes 
 
 http://\<DNS RECORD\>.ping.fuji.com:443/
 
-You will probably need to wait a few minutes for the EC2 instance to fully build and the load balancer to complete health checks and show the instance as up
+#### You will probably need to wait a few minutes for the EC2 instance to fully build and the load balancer to complete health checks and show the instance as up
 After the interval you should see the three repositories setup to do the three exercises.
 
 If you want you can ssh to the ec2 instance using the external IP from the output as follows
