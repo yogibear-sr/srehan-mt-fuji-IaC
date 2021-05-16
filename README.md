@@ -35,7 +35,7 @@ There is no https certificate installed but this can be added if required
 
 Once build is complete, an number of outputs are given for information purposes ,  goto a web browser and using the DNS record name (https://srehan-httpd.ping.fuji.com:443) added type
 
-http://<DNS RECORD>.ping.fuji.com:443/
+http://\<DNS RECORD\>.ping.fuji.com:443/
 
 You will probably need to wait a few minutes for the EC2 instance to fully build and the load balancer to complete health checks and show the instance as up
 After the interval you should see the three repositories setup to do the three exercises.
