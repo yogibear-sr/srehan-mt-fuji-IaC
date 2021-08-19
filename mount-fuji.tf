@@ -13,7 +13,7 @@ resource "aws_security_group" "mount-fuji-ssh-http" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["86.21.204.249/32"]
+    cidr_blocks = ["0.0.0.0/32"]
     description = "Allow ssh access from Subhash IP only"
   }
 
@@ -29,7 +29,7 @@ resource "aws_security_group" "mount-fuji-ssh-http" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["86.21.204.249/32", "172.31.0.0/16"]
+    cidr_blocks = ["0.0.0.0/32", "172.31.0.0/16"]
     description = "Allow http access from Subhash IP and the load balancer"
   }
 
@@ -101,7 +101,7 @@ resource "aws_security_group" "mount-fuji-elbsg" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["86.21.204.249/32"]
+    cidr_blocks = ["0.0.0.0/0"]
     description = "Allow 443 access from Subhash IP"
   }
 
