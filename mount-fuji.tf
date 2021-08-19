@@ -72,7 +72,7 @@ resource "aws_instance" "mount-fuji" {
                 cd $html_folder
                 for REPO in srehan-mt-fuji-IaC srehan-mt-fuji-App_Module srehan-mt-fuji-docker
                     do
-                         git clone https://yogibear-sr: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@github.com/yogibear-sr/$REPO.git
+                         git clone https://yogibear-sr:<GT_TOKEN>@github.com/yogibear-sr/$REPO.git
                          (cd $REPO/ ; git archive main --format=tgz --output=../$REPO.tgz)
                          [[ -e $REPO/mount-fuji.conf ]] && cp $REPO/mount-fuji.conf /etc/httpd/conf.d
                          [[ -e $REPO ]] && rm -rf $REPO
